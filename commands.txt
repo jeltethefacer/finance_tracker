@@ -1,0 +1,7 @@
+docker build -t some-content-nginx .
+docker run --name some-nginx -d -p 80:80 some-content-nginx
+docker run --name some-nginx -d -v C:/Users/jelte_laptop/Documents/php_app/test/www:/usr/share/nginx/html -p 80:80 some-content-nginx 
+docker-compose up -d
+
+
+vendor/bin/doctrine orm:schema-tool:update --force --dump-sql
