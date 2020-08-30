@@ -1,0 +1,29 @@
+web:
+  image: nginx:latest
+  container_name: nginx
+  ports:
+    - "8080:80"
+
+  links:
+    - php
+php:
+  image: php_mysql:latest
+  container_name: php
+
+composer:
+  image: composer:1.9
+  container_name: composer
+  command: ["composer", "install"]
+
+
+mysqldb:
+  image: mysql:5.7
+  container_name: mysql
+  restart: always
+  environment:
+    MYSQL_DATABASE: doctrine
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: dev
+    MYSQL_PASSWORD: dev
+  ports:
+    - "3306:3306"

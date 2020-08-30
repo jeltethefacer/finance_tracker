@@ -1,7 +1,7 @@
 <?php
 define("ROOT", dirname(__DIR__));
 require_once ROOT."/bootstrap.php";
-
+$entityManager = getEntityManager();
 if ($_SERVER["REQUEST_METHOD"] === 'POST') {
    echo "posting";
     $user = new User();

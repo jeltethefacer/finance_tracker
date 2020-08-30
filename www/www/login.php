@@ -1,34 +1,34 @@
 <?php
 define("ROOT", dirname(__DIR__));
 require_once ROOT."/bootstrap.php";
-session_start();
+require_once ROOT."/util/verification.php";
 
-if ($_SERVER["REQUEST_METHOD"] === 'POST') {
-    echo "posting";
-    $user = $entityManager->getRepository("User")->findOneBy(array("name" => $_POST["name"]));
-    if(!$user){
-        echo "no user found";
-    } else if(password_verify($_POST["password"], $user->getPassword())) {
-        $_SESSION["user"] = $user->getId();
-        die();
+header('Content-Type: application/json');
+
+$entityManager = getEntityManager();
+
+if ($_SERVER["REQUEST_METHOD"] === 'GET') {
+    $jsonBody = file_get_contents('php://input');
+    $jsonRequest = json_decode($jsonBody, $assoc = true);
+
+    //creates standard errormessage
+    //TODO: make class.
+    $incorrectCredentialsMessage = array("error" => true, "errorCode" => "INVALID_CREDENTIALS");
+
+
+    //checks if the parameters are non empty or else don't bother to query db.
+    if(empty($jsonRequest["name"]) || empty($jsonRequest["password"])) {
+        //returns the above defined error message
+        echo json_encode($incorrectCredentialsMessage);
+    } else {
+        //fetches user
+        $user = $entityManager->getRepository("User")->findOneBy(array("name" => $jsonRequest["name"]));
+        //first checks if the user exists and if the password is correct.
+        if($user && password_verify($jsonRequest["password"], $user->getPassword())) {
+            echo json_encode(array("token" => encodeJWTUser($user->getId())));
+            die();
+        } else {
+            echo json_encode($incorrectCredentialsMessage);
+        }
     }
 }
-?>
-
-<html lang="en">
-<head>
-    <title>login</title>
-</head>
-<h1>Login</h1>
-<form action='<?php echo $_SERVER["PHP_SELF"]?>' method="post">
-    <label>
-        name:
-        <input type="text" name="name">
-    </label><br/>
-    <label>
-        password:
-        <input type="password" name="password">
-    </label><br/>
-    <input type="submit">
-</form>
-</html>

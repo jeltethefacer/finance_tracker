@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="transactions")
  */
-class Transaction
+class Transaction implements JsonSerializable
 {
     /**
      * @var int
@@ -134,4 +134,15 @@ class Transaction
         return sprintf("€%.2f", $euro);
     }
 
+    public function jsonSerialize()
+    {
+        // TODO: Implement jsonSerialize() method.
+        return array(
+            "id" => $this->id,
+            "name" => $this->name,
+            "description" => $this->description,
+            "money" => $this->money,
+            "event" => $this->event->getId()
+        );
+    }
 }

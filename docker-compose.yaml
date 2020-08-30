@@ -1,24 +1,25 @@
-web:
-    image: nginx:latest
+
+#web:
+#    image: nginx:latest
+#    container_name: nginx
+#    ports:
+#        - "8080:80"
+#    volumes:
+#        - ./www:/app/www
+#        - ./site.conf:/etc/nginx/conf.d/default.conf
+#    links:
+#        - php
+
+php:
+    image: lemp:latest
+    container_name: lemp
     ports:
         - "8080:80"
-    volumes: 
-        - ./www:/code
+    volumes:
+        - ./www:/app/www
         - ./site.conf:/etc/nginx/conf.d/default.conf
-    links:
-        - php
-php:
-    image: php:7.4-fpm
-#    command: ["/usr/local/bin/docker-php-ext-install", "pdo", "pdo_mysql"]
-    volumes:
-    - ./www:/code
 
-composer:
-    image: composer:1.9
-    command: ["composer", "install"]
-    volumes:
-        - ./www:/app
-    
+
 mysqldb:
     image: mysql:5.7
     container_name: mysql
@@ -31,4 +32,4 @@ mysqldb:
     ports:
         - "3306:3306"
     volumes:
-        - "./data/db/mysql:/var/lib/mysql"
+        - ./data/db/mysql:/var/lib/mysql

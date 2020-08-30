@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User
+class User implements JsonSerializable
 {
     /** 
      * @ORM\Id
@@ -71,5 +71,13 @@ class User
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    public function jsonSerialize()
+    {
+        return array(
+            "id" => $this->id,
+            "name" => $this->name
+        );
     }
 }
